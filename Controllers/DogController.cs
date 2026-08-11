@@ -32,6 +32,10 @@ public class DogController : ControllerBase
     public async Task<ActionResult<FindDogByIdDTO>> CreateDog(CreateDogDTO createDogDTO)
     {
         var dog = await _dogRepository.CreatingDog(createDogDTO);
+        if(dog == null)
+        {
+            return BadRequest("Something was wrong.");
+        }
         return Ok(dog);
     }
 }

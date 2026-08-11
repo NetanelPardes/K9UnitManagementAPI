@@ -16,5 +16,6 @@ namespace K9UnitManagementAPI.DTO
 
         [RegularExpression("^Active|InTraining|Retired$", ErrorMessage = "Status must be one of the list")]
         public string? Status { get; set; } = "InTraining";
+        public int? HandlerId { get; set; } = null;
     }
 }

@@ -13,8 +13,22 @@ namespace K9UnitManagementAPI.Repositories
             _DbContext = DbContext;
         }
 
-        public async Task<FindDogByIdDTO> CreatingDog(CreateDogDTO createDogDTO)
+        public async Task<FindDogByIdDTO?> CreatingDog(CreateDogDTO createDogDTO)
         {
+            if(createDogDTO.DateOfBirth < DateTime.Now)
+            {
+                return null;
+            }
+            var mi = _DbContext.Dogs.Where(d => d.MicrochipId == createDogDTO.MicrochipId).FirstOrDefaultAsync();
+            if(mi != null)
+            {
+                return null;
+            }
+            var had = _DbContext.Handlers.Where(h => h.Id == createDogDTO.HandlerId).FirstOrDefaultAsync();
+            if (mi == null)
+            {
+                return null;
+            }
             var dog = new Dog
             {
                 Name = createDogDTO.Name,
@@ -22,8 +36,8 @@ namespace K9UnitManagementAPI.Repositories
                 MicrochipId = createDogDTO.MicrochipId,
                 DateOfBirth = createDogDTO.DateOfBirth,
                 Specialty = createDogDTO.Specialty,
-                Status = createDogDTO.Status == null ? "InTraining" : createDogDTO.Status
-
+                Status = createDogDTO.Status == null ? "InTraining" : createDogDTO.Status,
+                HandlerId = createDogDTO.HandlerId
             };
             _DbContext.Dogs.Add(dog);
             await _DbContext.SaveChangesAsync();
