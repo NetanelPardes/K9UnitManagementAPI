@@ -18,6 +18,8 @@ builder.Services.AddDbContext<K9UnitManagementDbContext>(options =>
 });
 
 builder.Services.AddScoped<IDogRepository, DogRepository>();
+builder.Services.AddScoped<IHandlerRepository, HandlerRepository>();
+builder.Services.AddScoped<ITrainingSessionRepository, TrainingSessionRepository>();
 
 var app = builder.Build();
 

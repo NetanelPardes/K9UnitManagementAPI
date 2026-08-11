@@ -15,20 +15,24 @@ namespace K9UnitManagementAPI.Repositories
 
         public async Task<FindDogByIdDTO?> CreatingDog(CreateDogDTO createDogDTO)
         {
-            if(createDogDTO.DateOfBirth < DateTime.Now)
+            if (createDogDTO.DateOfBirth > DateTime.Now)
             {
+                Console.WriteLine("1");
                 return null;
             }
             var mi = _DbContext.Dogs.Where(d => d.MicrochipId == createDogDTO.MicrochipId).FirstOrDefaultAsync();
-            if(mi != null)
+            if (mi != null)
             {
+                Console.WriteLine("2");
                 return null;
             }
             var had = _DbContext.Handlers.Where(h => h.Id == createDogDTO.HandlerId).FirstOrDefaultAsync();
-            if (mi == null)
+            if (had == null)
             {
+                Console.WriteLine("3");
                 return null;
             }
+            Console.WriteLine("4");
             var dog = new Dog
             {
                 Name = createDogDTO.Name,
@@ -58,5 +62,55 @@ namespace K9UnitManagementAPI.Repositories
                 Status = n.Status
             }).FirstOrDefaultAsync();
         }
+
+        public async Task<IEnumerable<DogsByFiltersTDO>> SearchDogs(string? specialty, string? status)
+        {
+            var dogs = _DbContext.Dogs.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(specialty))
+            {
+                dogs = dogs.Where(d => d.Specialty == specialty);
+            }
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                dogs = dogs.Where(d => d.Status == status);
+            }
+            return dogs.Select(d => new DogsByFiltersTDO
+            {
+                Id = d.Id,
+                Name = d.Name,
+                Breed = d.Breed,
+                Specialty = d.Specialty,
+                Status = d.Status
+            }).ToList();
+        }
+        public async Task<IEnumerable<DogsWithTheHandlerTDO>> DogsWithTheHandler()
+        {
+            return _DbContext.Dogs.Select(n => new DogsWithTheHandlerTDO
+            {
+                Id = n.Id,
+                Name = n.Name,
+                Breed = n.Name,
+                Specialty = n.Specialty,
+                Status = n.Status,
+                HandlerId = n.HandlerId != null ? n.handler.Id : null,
+                HandlerName = n.HandlerId != null ? n.handler.FullName : null,
+                Rank = n.HandlerId != null ? n.handler.Rank : null
+            });
+        }
+
+        public async Task<IEnumerable<PerformanceSummaryDTO>> PerformanceSummaryForEachDog()
+        {
+            return _DbContext.Dogs
+                .Select(n => new PerformanceSummaryDTO
+                {
+                    Id = n.Id,
+                    Name = n.Name,
+                    Specialty = n.Specialty,
+                    NumberOfTrainings = n.trainingSessions.Count(),
+                    AveragePerformanceScore = n.trainingSessions.Count() > 0 ? n.trainingSessions.Average(t => (double)t.PerformanceScore) : null
+                });
+        }
+
+        
     }
 }

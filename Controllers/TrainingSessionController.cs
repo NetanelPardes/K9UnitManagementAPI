@@ -27,5 +27,18 @@ public class TrainingSessionController : ControllerBase
         }
         return Ok(train);
     }
+
+    [HttpGet("training-sessions/detailed")]
+    public async Task<ActionResult<IEnumerable<TrainingWithFullDetailsDTO>>> TrainingWithFullDetails()
+    {
+        var train = _trainingSessionRepository.TrainingWithFullDetails();
+        return Ok(train);
+    }
+    [HttpGet("training-sessions/paged")]
+    public async Task<ActionResult<TrainingListTDO>> TrainingListBypage([FromQuery] int page, [FromQuery] int pageSize)
+    {
+        var train = _trainingSessionRepository.TrainingListByPage(page, pageSize);
+        return Ok(train);
+    }
 }
 
