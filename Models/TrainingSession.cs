@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace K9UnitManagementAPI.Models
 {
     public class TrainingSession
     {
+        
         public int Id { get; set; }
 
         [Required(ErrorMessage = "SessionDate is required")]
@@ -22,10 +24,13 @@ namespace K9UnitManagementAPI.Models
         [Range(0, 100, ErrorMessage = "PerformanceScore should be between 0 and 100")]
         public int PerformanceScore { get; set; }
 
-        public bool Passed { get; }
+        public bool Passed { get; set; }
 
         [Required(ErrorMessage = "Evaluator is required")]
         [StringLength(100, ErrorMessage = "Evaluator maximum characters is 100")]
         public string Evaluator { get; set; } = string.Empty;
+
+        public int DogId { get; set; }
+        public Dog dog { get; set; } = null!;
     }
 }

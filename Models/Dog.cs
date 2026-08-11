@@ -1,11 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace K9UnitManagementAPI.Models
 {
     public class Dog
     {
+        
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Name is required")]
@@ -30,5 +33,10 @@ namespace K9UnitManagementAPI.Models
         [Required(ErrorMessage = "Status is required")]
         [RegularExpression("^(Active|InTraining|Retired)$", ErrorMessage = "Status must be one of the list")]
         public string Status { get; set; } = "InTraining";
+
+        [DefaultValue(null)]
+        public int? HandlerId { get; set; }
+        public Handler? handler { get; set; }
+        public ICollection<TrainingSession> trainingSessions { get; set; } = new List<TrainingSession>();
     }
 }
