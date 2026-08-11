@@ -6,8 +6,8 @@ namespace K9UnitManagementAPI.DTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Race { get; set; }
-        public string Specialization { get; set; }
+        public string Breed { get; set; }
+        public string Specialty { get; set; }
         public string Status { get; set; }
     }
 }
